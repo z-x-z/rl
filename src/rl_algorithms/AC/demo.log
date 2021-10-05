@@ -1,0 +1,32 @@
+2021-08-17 12:34
+lr = 1e-2, discount = 0.95
+    episode:  0 Evaluation Average Reward: 23.1
+    episode:  100 Evaluation Average Reward: 26.5
+    episode:  200 Evaluation Average Reward: 9.6
+    episode:  300 Evaluation Average Reward: 10.3
+    episode:  400 Evaluation Average Reward: 11.8
+    episode:  500 Evaluation Average Reward: 12.3
+    episode:  600 Evaluation Average Reward: 13.0
+    episode:  700 Evaluation Average Reward: 9.3
+    episode:  800 Evaluation Average Reward: 9.3
+    episode:  900 Evaluation Average Reward: 11.1
+    episode:  1000 Evaluation Average Reward: 12.3
+    episode:  1100 Evaluation Average Reward: 11.0
+    episode:  1200 Evaluation Average Reward: 21.4
+    episode:  1300 Evaluation Average Reward: 35.3
+    episode:  1400 Evaluation Average Reward: 63.8
+    episode:  1500 Evaluation Average Reward: 70.4
+    episode:  1600 Evaluation Average Reward: 125.9
+    episode:  1700 Evaluation Average Reward: 9.5
+    episode:  1800 Evaluation Average Reward: 9.2
+    episode:  1900 Evaluation Average Reward: 9.3
+    episode:  2000 Evaluation Average Reward: 9.3
+    episode:  2100 Evaluation Average Reward: 9.6
+    episode:  2200 Evaluation Average Reward: 9.4
+    episode:  2300 Evaluation Average Reward: 9.2
+    episode:  2400 Evaluation Average Reward: 9.3
+    episode:  2500 Evaluation Average Reward: 9.3
+    episode:  2600 Evaluation Average Reward: 9.6
+    episode:  2700 Evaluation Average Reward: 9.4
+    episode:  2800 Evaluation Average Reward: 9.2
+    episode:  2900 Evaluation Average Reward: 9.4

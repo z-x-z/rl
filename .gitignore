@@ -1,0 +1,11 @@
+
+.idea
+.vscode
+other
+test
+
+note.md
+rl.code-workspace
+
+# python cache files
+__pycache__
