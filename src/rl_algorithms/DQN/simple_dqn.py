@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 # DQN网络输出的是所有动作的Q值表，而Q值表的大小有限，所以可选择的动作也是有限的（离散）
 class DQNNet(nn.Module):
-    def __init__(self, N_in, N_out, N_HIDDEN_LAYERS=128, use_gpu=False):
+    def __init__(self, N_in, N_out, N_HIDDEN_LAYERS=128):
         super(DQNNet, self).__init__()
         self.fc1 = nn.Linear(N_in, N_HIDDEN_LAYERS)
         self.relu1 = nn.ReLU()
@@ -33,8 +33,7 @@ class SimpleDeepQNetwork:
                  replace_target_iterations=300,
                  memory_size=500,
                  batch_size=32,
-                 use_gpu=False
-                 ):
+                 use_gpu=False):
         self.memory_count = 0
         self.n_features = n_features
         self.n_actions = n_actions
@@ -55,15 +54,14 @@ class SimpleDeepQNetwork:
 
     def __build_net(self):
         # 网络输出的是q值，而非直接选择动作
-        self.eval_net = DQNNet(self.n_features, self.n_actions, use_gpu=self.use_gpu)
-        self.target_net = DQNNet(self.n_features, self.n_actions, use_gpu=self.use_gpu)
-        self.loss_func = nn.MSELoss() 
+        self.eval_net = DQNNet(self.n_features, self.n_actions)
+        self.target_net = DQNNet(self.n_features, self.n_actions)
+        self.loss_func = nn.MSELoss()
         if self.use_gpu:
             self.eval_net = self.eval_net.cuda()  # 将网络模型转移至gpu中
             self.target_net = self.target_net.cuda()
-            self.loss_func = self.loss_func.cuda() # 将损失函数转移到gpu中
-        self.optimizer = torch.optim.Adam(self.eval_net.parameters(), lr=self.learning_rate) # 优化器不能转移到gpu中
-        
+            self.loss_func = self.loss_func.cuda()  # 将损失函数转移到gpu中
+        self.optimizer = torch.optim.Adam(self.eval_net.parameters(), lr=self.learning_rate)  # 优化器不能转移到gpu中
 
     def store_transition(self, state, action, reward, next_state):
         transition = np.hstack((state, [action, reward], next_state))

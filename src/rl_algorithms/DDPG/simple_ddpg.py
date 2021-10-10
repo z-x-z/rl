@@ -12,7 +12,6 @@ import numpy as np
 def initialize_weights(net):
     for m in net.modules():
         if isinstance(m, nn.Linear):
-            # m.weight.data.normal_(0, 0.1)
             nn.init.normal_(m.weight.data, 0, 0.1)
             # nn.init.constant_(m.bias.data, 0.01)
 

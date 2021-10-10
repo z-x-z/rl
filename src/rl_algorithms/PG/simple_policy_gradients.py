@@ -8,7 +8,6 @@ File         : rl - simple_policy_gradients
 from typing import Any
 
 import numpy as np
-import math
 import torch
 import torch.nn as nn
 from torch.distributions.categorical import Categorical
