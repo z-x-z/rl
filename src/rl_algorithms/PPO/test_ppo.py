@@ -10,7 +10,7 @@ import gym
 from src.rl_algorithms.PPO.simple_ppo import SimplePPO
 
 
-def test_ppo(env: gym.Env, ppo: SimplePPO, MAX_EPISODES=500, MAX_EPISODE_STEPS=200):
+def test_ppo(env: gym.Env, ppo: SimplePPO, MAX_EPISODES=1000, MAX_EPISODE_STEPS=200):
     episode_rewards = []
     for e in range(MAX_EPISODES):
         s = env.reset()

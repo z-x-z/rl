@@ -5,7 +5,8 @@ Date         : 2021-08-20 10:41:47
 FilePath     : /rl/src/rl_algorithms/DDPG/test_ddpg.py
 '''
 from src.rl_algorithms.DDPG.simple_ddpg import SimpleDDPG
-import matplotlib.pyplot as plt
+from src.utils.plot_episode_rewards import plot_episode_rewards
+from time import time
 import gym
 import numpy as np
 
@@ -34,14 +35,7 @@ def test_ddpg(env: gym.Env, ddpg: SimpleDDPG, max_episodes=500):
         episode_reward_list.append(episode_reward)
         mean_reward_list.append(sum(episode_reward_list[-MEAN_INTERVAL:]) / MEAN_INTERVAL)
 
-    # plt.plot(list(range(len(episode_step_list))), episode_step_list)
-    plt.xlabel("情节数")
-    plt.ylabel("奖励")
-    plt.title("DDPG算法解决Pendulum-v0问题")
-    plt.plot(episode_reward_list, label="每一情节下的奖励")
-    plt.plot(mean_reward_list, label="平均奖励")
-    plt.legend()
-    plt.show()
+    return episode_reward_list
 
 
 def show_chinese():
@@ -78,7 +72,8 @@ def seed_torch(seed):
 
 if __name__ == "__main__":
     show_chinese()
-    my_env = gym.make("Pendulum-v0")
+    env_name = "Pendulum-v0"
+    my_env = gym.make(env_name)
     "seed the test"
     # seed = 1
     # seed_all(seed, my_env)
@@ -98,4 +93,8 @@ if __name__ == "__main__":
     noise_decay = 0.9995
     simple_ddpg = SimpleDDPG(state_dim, action_dim, action_bound, lr_a, lr_c, discount, memory_capacity, batch_size, tau,
                              noise_init_var, noise_decay)
-    test_ddpg(my_env, simple_ddpg, max_episodes)
+    tic = time()
+    episode_reward_list = test_ddpg(my_env, simple_ddpg, max_episodes)
+    toc = time()
+    plot_episode_rewards(episode_reward_list, "DDPG", env_name, False, toc-tic)
+    

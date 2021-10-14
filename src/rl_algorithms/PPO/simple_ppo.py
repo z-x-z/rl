@@ -73,7 +73,7 @@ class CriticNet(nn.Module):
 
 
 class SimplePPO:
-    def __init__(self, state_dim, action_dim, discount=0.95, batch_size=32, lr_a=5e-3, lr_c=5e-3, method_name='clip') -> None:
+    def __init__(self, state_dim, action_dim, discount=0.95, batch_size=256, lr_a=1e-3, lr_c=2e-3, method_name='clip') -> None:
         self.state_dim = state_dim
         self.action_dim = action_dim
         self.discount = discount
@@ -83,8 +83,8 @@ class SimplePPO:
         self.lr_a = lr_a
         self.lr_c = lr_c
         self.buffer_init()
-        self.ACTOR_UPDATE_STEPS = 5
-        self.CRITIC_UPDATE_STEPS = 5
+        self.ACTOR_UPDATE_STEPS = 10
+        self.CRITIC_UPDATE_STEPS = 10
         self.build_net()
         pass
 
@@ -120,27 +120,26 @@ class SimplePPO:
             b_g.append(v_s_)
         b_g.reverse()
         b_s, b_a, b_r, b_old_log_prob, b_g = [tensor_wrapper(_) for _ in [b_s, b_a, b_r, b_old_log_prob, b_g]]
+        b_v_s = self.critic(b_s)
+        advantage_kth = b_g - b_v_s.detach()
+        advantage_kth = (advantage_kth - advantage_kth.mean()) / (advantage_kth.std() + 1e-7)  # normalization
         # update actor
         for _ in range(self.ACTOR_UPDATE_STEPS):
-            b_v_s = self.critic(b_s)  # Update b_v_s each iteration.
-            advantage_kth = b_g - b_v_s
-            advantage_kth = (advantage_kth - advantage_kth.mean()) / (advantage_kth.std() + 1e-7)  # normalization
             _, b_new_log_prob = self.actor(b_s)
             ratio = torch.exp(b_new_log_prob - b_old_log_prob)
-
             if self.method_name == 'kl_pen':
                 a_loss = None
             elif self.method_name == "clip":
                 # Calculate surrogate losses
                 loss1 = ratio * advantage_kth
                 loss2 = torch.clamp(ratio, 1 - self.method['epsilon'], 1 + self.method['epsilon']) * advantage_kth
-                a_loss = -(torch.min(loss1, loss2)).mean()
+                a_loss = (-torch.min(loss1, loss2)).mean()
             self.actor_optimizer.zero_grad()
             a_loss.backward()
             self.actor_optimizer.step()
-        # update critic
-        b_v_s = self.critic(b_s)
-        c_loss = nn.MSELoss()(b_v_s, b_g)
-        self.critic_optimizer.zero_grad()
-        c_loss.backward()
-        self.critic_optimizer.step()
+            # update critic
+            b_v_s = self.critic(b_s)  # Update b_v_s each iteration.
+            c_loss = nn.MSELoss()(b_v_s, b_g)
+            self.critic_optimizer.zero_grad()
+            c_loss.backward()
+            self.critic_optimizer.step()
